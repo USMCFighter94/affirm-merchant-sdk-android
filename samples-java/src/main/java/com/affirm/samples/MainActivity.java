@@ -2,6 +2,7 @@ package com.affirm.samples;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,6 +15,7 @@ import com.affirm.android.AffirmLogoType;
 import com.affirm.android.AffirmPromotionButton;
 import com.affirm.android.AffirmRequest;
 import com.affirm.android.CookiesUtil;
+import com.affirm.android.PromotionCallback;
 import com.affirm.android.SpannablePromoCallback;
 import com.affirm.android.exception.AffirmException;
 import com.affirm.android.model.Address;
@@ -25,6 +27,7 @@ import com.affirm.android.model.Checkout;
 import com.affirm.android.model.Item;
 import com.affirm.android.model.Name;
 import com.affirm.android.model.PromoPageType;
+import com.affirm.android.model.PromoRequestData;
 import com.affirm.android.model.Shipping;
 import com.affirm.android.model.VcnReason;
 
@@ -107,11 +110,18 @@ public class MainActivity extends AppCompatActivity implements Affirm.CheckoutCa
 
         TextView promoTextView = findViewById(R.id.promotionTextView);
 
-        AffirmRequest request = Affirm.fetchPromotionAmount(null, null, PRICE, true, new SpannablePromoCallback() {
+        PromoRequestData requestData = new PromoRequestData.Builder()
+                .setPromoId(null)
+                .setPageType(null)
+                .setAmount(PRICE)
+                .setShowCta(true)
+                .build();
+
+        Affirm.fetchPromotionAmount(requestData, promoTextView.getTextSize(), getBaseContext(), new PromotionCallback() {
             @Override
-            public void onPromoWritten(@NonNull String promo, @NonNull String htmlPromo, boolean showPrequal) {
-                Log.d(MainActivity.class.getSimpleName(), "Recieved promo" + promo);
-                promoTextView.setText(promo);
+            public void onSuccess(@Nullable SpannableString spannableString) {
+                Log.d(MainActivity.class.getSimpleName(), "Recieved promo" + spannableString);
+                promoTextView.setText(spannableString);
             }
 
             @Override
@@ -120,8 +130,6 @@ public class MainActivity extends AppCompatActivity implements Affirm.CheckoutCa
                 Toast.makeText(getBaseContext(), "Promo fetch failed", Toast.LENGTH_LONG).show();
             }
         });
-
-        request.create();
     }
 
     private AffirmTrack trackModel() {

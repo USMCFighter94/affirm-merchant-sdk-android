@@ -2,16 +2,17 @@ package com.affirm.sampleskt
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.affirm.android.Affirm
 import com.affirm.android.CookiesUtil
-import com.affirm.android.SpannablePromoCallback
+import com.affirm.android.PromotionCallback
 import com.affirm.android.exception.AffirmException
 import com.affirm.android.model.*
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.ArrayList
+import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
@@ -39,12 +40,20 @@ class MainActivity : AppCompatActivity(), Affirm.CheckoutCallbacks, Affirm.VcnCh
             CookiesUtil.clearCookies(this@MainActivity)
         }
 
+        val requestData = PromoRequestData.Builder()
+                .setPromoId(null)
+                .setPageType(null)
+                .setAmount(PRICE)
+                .setShowCta(true)
+                .build()
+
+
         Affirm.configureWithAmount(promo, null, PromoPageType.PRODUCT, PRICE, true)
 
-        val request = Affirm.fetchPromotionAmount(null, null, PRICE, true, object:  SpannablePromoCallback {
-           override fun onPromoWritten(promo: String, htmlPromo: String, showPrequal: Boolean) {
-                Log.d(MainActivity::class.java.simpleName, "Recieved promo $promo")
-               promotionTextView.text = promo
+        Affirm.fetchPromotionAmount(requestData, promotionTextView.textSize, baseContext, object : PromotionCallback {
+            override fun onSuccess(spannableString: SpannableString?) {
+                Log.d(MainActivity::class.java.simpleName, "Recieved promo $spannableString")
+                promotionTextView.text = spannableString
             }
 
             override fun onFailure(exception: AffirmException) {
@@ -52,8 +61,6 @@ class MainActivity : AppCompatActivity(), Affirm.CheckoutCallbacks, Affirm.VcnCh
                 Toast.makeText(baseContext, "Promo fetch failed", Toast.LENGTH_LONG).show()
             }
         })
-
-        request.create()
     }
 
     private fun trackModel(): AffirmTrack {

@@ -2,7 +2,9 @@ package com.affirm.android;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.affirm.android.model.AffirmTrack;
 import com.affirm.android.model.CardDetails;
 import com.affirm.android.model.Checkout;
 import com.affirm.android.model.PromoPageType;
+import com.affirm.android.model.PromoRequestData;
 import com.affirm.android.model.VcnReason;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -504,125 +507,44 @@ public final class Affirm {
     /**
      * Write the as low as span (text and logo) on a AffirmPromoLabel
      *
-     * @param promoId  the client's modal id
-     * @param pageType need to use one of "banner, cart, category, homepage, landing,
-     *                 payment, product, search"
-     * @param amount   a float that represents the amount to retrieve pricing for
-     *                 eg 112.02 as $112 and 2¢
-     * @param showCta  whether need to show cta
+     * @param request  a class containing data about the request to make
+     * @param textSize the textSize for the span
+     * @param context  the context being used
      * @param callback a class that's called when the request completes
      */
-    public static AffirmRequest fetchPromotionAmount(
-            @Nullable final String promoId,
-            @Nullable final PromoPageType pageType,
-            final float amount,
-            final boolean showCta,
-            final SpannablePromoCallback callback
+    public static void fetchPromotionAmount(
+            PromoRequestData request,
+            float textSize,
+            Context context,
+            final PromotionCallback callback
     ) {
-        return fetchPromotionAmount(
-                promoId,
-                pageType,
-                amount,
-                showCta,
-                AFFIRM_COLOR_TYPE_BLUE,
-                AFFIRM_DISPLAY_TYPE_LOGO,
-                callback
-        );
-    }
+        new PromoRequest(
+                request.getPromoId(),
+                request.getPageType(),
+                request.getAmount(),
+                request.showCta(),
+                request.getAffirmColor(),
+                request.getAffirmLogoType(),
+                new SpannablePromoCallback() {
+                    @Override
+                    public void onPromoWritten(@NonNull String promo, @NonNull String htmlPromo, boolean showPrequal) {
+                        SpannableString spannableString = AffirmUtils.createSpannableForText(
+                                promo,
+                                textSize,
+                                request.getAffirmLogoType(),
+                                request.getAffirmColor(),
+                                context
+                        );
 
-    /**
-     * Write the as low as span (text and logo) on a AffirmPromoLabel
-     *
-     * @param promoId     the client's modal id
-     * @param pageType    need to use one of "banner, cart, category, homepage, landing,
-     *                    payment, product, search"
-     * @param amount      a float that represents the amount to retrieve pricing for
-     *                    eg 112.02 as $112 and 2¢
-     * @param showCta     whether need to show cta
-     * @param affirmColor the color used for the affirm logo in the response
-     * @param callback    a class that's called when the request completes
-     */
-    public static AffirmRequest fetchPromotionAmount(
-            @Nullable final String promoId,
-            @Nullable final PromoPageType pageType,
-            final float amount,
-            final boolean showCta,
-            final AffirmColor affirmColor,
-            final SpannablePromoCallback callback
-    ) {
-        return fetchPromotionAmount(
-                promoId,
-                pageType,
-                amount,
-                showCta,
-                affirmColor,
-                AFFIRM_DISPLAY_TYPE_LOGO,
-                callback
-        );
-    }
+                        callback.onSuccess(spannableString);
+                    }
 
-    /**
-     * Write the as low as span (text and logo) on a AffirmPromoLabel
-     *
-     * @param promoId        the client's modal id
-     * @param pageType       need to use one of "banner, cart, category, homepage, landing,
-     *                       payment, product, search"
-     * @param amount         a float that represents the amount to retrieve pricing for
-     *                       eg 112.02 as $112 and 2¢
-     * @param showCta        whether need to show cta
-     * @param affirmLogoType the type of affirm logo to use in the response
-     * @param callback       a class that's called when the request completes
-     */
-    public static AffirmRequest fetchPromotionAmount(
-            @Nullable final String promoId,
-            @Nullable final PromoPageType pageType,
-            final float amount,
-            final boolean showCta,
-            final AffirmLogoType affirmLogoType,
-            final SpannablePromoCallback callback
-    ) {
-        return fetchPromotionAmount(
-                promoId,
-                pageType,
-                amount,
-                showCta,
-                AFFIRM_COLOR_TYPE_BLUE,
-                affirmLogoType,
-                callback
-        );
-    }
-
-    /**
-     * Write the as low as span (text and logo) on a AffirmPromoLabel
-     *
-     * @param promoId        the client's modal id
-     * @param pageType       need to use one of "banner, cart, category, homepage, landing,
-     *                       payment, product, search"
-     * @param amount         a float that represents the amount to retrieve pricing for
-     *                       eg 112.02 as $112 and 2¢
-     * @param showCta        whether need to show cta
-     * @param affirmColor    the color used for the affirm logo in the response
-     * @param affirmLogoType the type of affirm logo to use in the response
-     * @param callback       a class that's called when the request completes
-     */
-    public static AffirmRequest fetchPromotionAmount(
-            @Nullable final String promoId,
-            @Nullable final PromoPageType pageType,
-            final float amount,
-            final boolean showCta,
-            final AffirmColor affirmColor,
-            final AffirmLogoType affirmLogoType,
-            final SpannablePromoCallback callback
-    ) {
-        return new PromoRequest(
-                promoId,
-                pageType,
-                amount,
-                showCta,
-                affirmColor,
-                affirmLogoType,
-                callback
-        );
+                    @Override
+                    public void onFailure(@NonNull AffirmException exception) {
+                        callback.onFailure(exception);
+                    }
+                }
+        ).create();
     }
 
     // Add a blank fragment to handle the lifecycle of the activity

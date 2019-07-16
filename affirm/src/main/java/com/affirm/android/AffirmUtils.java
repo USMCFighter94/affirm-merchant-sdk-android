@@ -41,7 +41,7 @@ public final class AffirmUtils {
         return (int) (amount * 100);
     }
 
-    public static SpannableString spannableFromEditText(
+    static SpannableString createSpannableForText(
             @NonNull String template,
             float textSize,
             @NonNull AffirmLogoType affirmLogoType,
