@@ -4,7 +4,7 @@ import com.affirm.android.exception.AffirmException;
 
 import androidx.annotation.NonNull;
 
-interface SpannablePromoCallback {
+public interface SpannablePromoCallback {
     void onPromoWritten(@NonNull final String promo,
                         @NonNull final String htmlPromo,
                         final boolean showPrequal);

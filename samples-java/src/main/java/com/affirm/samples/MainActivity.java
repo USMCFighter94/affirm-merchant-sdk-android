@@ -2,6 +2,7 @@ package com.affirm.samples;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -11,7 +12,10 @@ import com.affirm.android.Affirm;
 import com.affirm.android.AffirmColor;
 import com.affirm.android.AffirmLogoType;
 import com.affirm.android.AffirmPromotionButton;
+import com.affirm.android.AffirmRequest;
 import com.affirm.android.CookiesUtil;
+import com.affirm.android.SpannablePromoCallback;
+import com.affirm.android.exception.AffirmException;
 import com.affirm.android.model.Address;
 import com.affirm.android.model.AffirmTrack;
 import com.affirm.android.model.AffirmTrackOrder;
@@ -100,6 +104,24 @@ public class MainActivity extends AppCompatActivity implements Affirm.CheckoutCa
 
         ((FrameLayout)findViewById(R.id.promo_container)).addView(affirmPromotionButton2);
         Affirm.configureWithAmount(affirmPromotionButton2, 1100, true);
+
+        TextView promoTextView = findViewById(R.id.promotionTextView);
+
+        AffirmRequest request = Affirm.fetchPromotionAmount(null, null, PRICE, true, new SpannablePromoCallback() {
+            @Override
+            public void onPromoWritten(@NonNull String promo, @NonNull String htmlPromo, boolean showPrequal) {
+                Log.d(MainActivity.class.getSimpleName(), "Recieved promo" + promo);
+                promoTextView.setText(promo);
+            }
+
+            @Override
+            public void onFailure(@NonNull AffirmException exception) {
+                Log.e(MainActivity.class.getSimpleName(), "Promo fetch failed", exception);
+                Toast.makeText(getBaseContext(), "Promo fetch failed", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        request.create();
     }
 
     private AffirmTrack trackModel() {

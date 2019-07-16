@@ -46,7 +46,7 @@ class PromoRequest extends AffirmRequest {
     }
 
     @Override
-    void cancel() {
+    public void cancel() {
         super.cancel();
         AffirmApiHandler.cancelNewPromoCall();
     }

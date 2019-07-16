@@ -31,7 +31,7 @@ class CheckoutRequest extends AffirmRequest {
     }
 
     @Override
-    void cancel() {
+    public void cancel() {
         super.cancel();
         if (useVCN) {
             AffirmApiHandler.cancelVcnCheckoutCall();

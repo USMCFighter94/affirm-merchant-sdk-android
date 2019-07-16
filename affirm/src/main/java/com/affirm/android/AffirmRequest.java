@@ -2,7 +2,7 @@ package com.affirm.android;
 
 import android.os.AsyncTask;
 
-abstract class AffirmRequest<T> {
+public abstract class AffirmRequest<T> {
 
     interface RequestCreate {
 
@@ -36,11 +36,11 @@ abstract class AffirmRequest<T> {
         }
     };
 
-    void create() {
+    public void create() {
         requestCreate.create();
     }
 
-    void cancel() {
+    public void cancel() {
         requestCreate.cancel();
     }
 }

@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.affirm.android.exception.AffirmException;
 import com.affirm.android.model.AffirmTrack;
 import com.affirm.android.model.CardDetails;
@@ -14,20 +17,19 @@ import com.affirm.android.model.Checkout;
 import com.affirm.android.model.PromoPageType;
 import com.affirm.android.model.VcnReason;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.affirm.android.AffirmColor.AFFIRM_COLOR_TYPE_BLUE;
 import static com.affirm.android.AffirmConstants.CHECKOUT_ERROR;
 import static com.affirm.android.AffirmConstants.CHECKOUT_TOKEN;
 import static com.affirm.android.AffirmConstants.CREDIT_DETAILS;
-import static com.affirm.android.AffirmConstants.VCN_REASON;
 import static com.affirm.android.AffirmConstants.PRODUCTION_JS_URL;
 import static com.affirm.android.AffirmConstants.PRODUCTION_URL;
 import static com.affirm.android.AffirmConstants.SANDBOX_JS_URL;
 import static com.affirm.android.AffirmConstants.SANDBOX_URL;
 import static com.affirm.android.AffirmConstants.TRACKER_URL;
+import static com.affirm.android.AffirmConstants.VCN_REASON;
+import static com.affirm.android.AffirmLogoType.AFFIRM_DISPLAY_TYPE_LOGO;
 import static com.affirm.android.ModalActivity.ModalType.PRODUCT;
 import static com.affirm.android.ModalActivity.ModalType.SITE;
 
@@ -497,6 +499,126 @@ public final class Affirm {
             }
         };
         promotionButton.setOnClickListener(onClickListener);
+    }
+
+    /**
+     * Write the as low as span (text and logo) on a AffirmPromoLabel
+     *
+     * @param promoId  the client's modal id
+     * @param pageType need to use one of "banner, cart, category, homepage, landing,
+     *                 payment, product, search"
+     * @param amount   (Float) eg 112.02 as $112 and ¢2
+     * @param showCta  whether need to show cta
+     * @param callback a class that's called when the request completes
+     */
+    public static AffirmRequest fetchPromotionAmount(
+            @Nullable final String promoId,
+            @Nullable final PromoPageType pageType,
+            final float amount,
+            final boolean showCta,
+            final SpannablePromoCallback callback
+    ) {
+        return fetchPromotionAmount(
+                promoId,
+                pageType,
+                amount,
+                showCta,
+                AFFIRM_COLOR_TYPE_BLUE,
+                AFFIRM_DISPLAY_TYPE_LOGO,
+                callback
+        );
+    }
+
+    /**
+     * Write the as low as span (text and logo) on a AffirmPromoLabel
+     *
+     * @param promoId     the client's modal id
+     * @param pageType    need to use one of "banner, cart, category, homepage, landing,
+     *                    payment, product, search"
+     * @param amount      (Float) eg 112.02 as $112 and ¢2
+     * @param showCta     whether need to show cta
+     * @param affirmColor the color used for the affirm logo in the response
+     * @param callback    a class that's called when the request completes
+     */
+    public static AffirmRequest fetchPromotionAmount(
+            @Nullable final String promoId,
+            @Nullable final PromoPageType pageType,
+            final float amount,
+            final boolean showCta,
+            final AffirmColor affirmColor,
+            final SpannablePromoCallback callback
+    ) {
+        return fetchPromotionAmount(
+                promoId,
+                pageType,
+                amount,
+                showCta,
+                affirmColor,
+                AFFIRM_DISPLAY_TYPE_LOGO,
+                callback
+        );
+    }
+
+    /**
+     * Write the as low as span (text and logo) on a AffirmPromoLabel
+     *
+     * @param promoId        the client's modal id
+     * @param pageType       need to use one of "banner, cart, category, homepage, landing,
+     *                       payment, product, search"
+     * @param amount         (Float) eg 112.02 as $112 and ¢2
+     * @param showCta        whether need to show cta
+     * @param affirmLogoType the type of affirm logo to use in the response
+     * @param callback       a class that's called when the request completes
+     */
+    public static AffirmRequest fetchPromotionAmount(
+            @Nullable final String promoId,
+            @Nullable final PromoPageType pageType,
+            final float amount,
+            final boolean showCta,
+            final AffirmLogoType affirmLogoType,
+            final SpannablePromoCallback callback
+    ) {
+        return fetchPromotionAmount(
+                promoId,
+                pageType,
+                amount,
+                showCta,
+                AFFIRM_COLOR_TYPE_BLUE,
+                affirmLogoType,
+                callback
+        );
+    }
+
+    /**
+     * Write the as low as span (text and logo) on a AffirmPromoLabel
+     *
+     * @param promoId        the client's modal id
+     * @param pageType       need to use one of "banner, cart, category, homepage, landing,
+     *                       payment, product, search"
+     * @param amount         (Float) eg 112.02 as $112 and ¢2
+     * @param showCta        whether need to show cta
+     * @param affirmColor    the color used for the affirm logo in the response
+     * @param affirmLogoType the type of affirm logo to use in the response
+     * @param callback       a class that's called when the request completes
+     */
+    public static AffirmRequest fetchPromotionAmount(
+            @Nullable final String promoId,
+            @Nullable final PromoPageType pageType,
+            final float amount,
+            final boolean showCta,
+            final AffirmColor affirmColor,
+            final AffirmLogoType affirmLogoType,
+            final SpannablePromoCallback callback
+    ) {
+        return new PromoRequest(
+                promoId,
+                pageType,
+                amount,
+                showCta,
+                affirmColor,
+                affirmLogoType,
+                callback
+        );
     }
 
     // Add a blank fragment to handle the lifecycle of the activity
