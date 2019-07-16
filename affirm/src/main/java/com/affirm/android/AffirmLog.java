@@ -4,7 +4,7 @@ import android.util.Log;
 
 import static com.affirm.android.AffirmConstants.SDK_NAME;
 
-final class AffirmLog {
+public final class AffirmLog {
 
     private AffirmLog() {
     }
@@ -17,7 +17,7 @@ final class AffirmLog {
         return logLevel;
     }
 
-    static void setLogLevel(int logLevel) {
+    public static void setLogLevel(int logLevel) {
         AffirmLog.logLevel = logLevel;
     }
 

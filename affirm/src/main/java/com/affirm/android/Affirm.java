@@ -507,7 +507,8 @@ public final class Affirm {
      * @param promoId  the client's modal id
      * @param pageType need to use one of "banner, cart, category, homepage, landing,
      *                 payment, product, search"
-     * @param amount   (Float) eg 112.02 as $112 and ¢2
+     * @param amount   a float that represents the amount to retrieve pricing for
+     *                 eg 112.02 as $112 and 2¢
      * @param showCta  whether need to show cta
      * @param callback a class that's called when the request completes
      */
@@ -535,7 +536,8 @@ public final class Affirm {
      * @param promoId     the client's modal id
      * @param pageType    need to use one of "banner, cart, category, homepage, landing,
      *                    payment, product, search"
-     * @param amount      (Float) eg 112.02 as $112 and ¢2
+     * @param amount      a float that represents the amount to retrieve pricing for
+     *                    eg 112.02 as $112 and 2¢
      * @param showCta     whether need to show cta
      * @param affirmColor the color used for the affirm logo in the response
      * @param callback    a class that's called when the request completes
@@ -565,7 +567,8 @@ public final class Affirm {
      * @param promoId        the client's modal id
      * @param pageType       need to use one of "banner, cart, category, homepage, landing,
      *                       payment, product, search"
-     * @param amount         (Float) eg 112.02 as $112 and ¢2
+     * @param amount         a float that represents the amount to retrieve pricing for
+     *                       eg 112.02 as $112 and 2¢
      * @param showCta        whether need to show cta
      * @param affirmLogoType the type of affirm logo to use in the response
      * @param callback       a class that's called when the request completes
@@ -595,7 +598,8 @@ public final class Affirm {
      * @param promoId        the client's modal id
      * @param pageType       need to use one of "banner, cart, category, homepage, landing,
      *                       payment, product, search"
-     * @param amount         (Float) eg 112.02 as $112 and ¢2
+     * @param amount         a float that represents the amount to retrieve pricing for
+     *                       eg 112.02 as $112 and 2¢
      * @param showCta        whether need to show cta
      * @param affirmColor    the color used for the affirm logo in the response
      * @param affirmLogoType the type of affirm logo to use in the response
